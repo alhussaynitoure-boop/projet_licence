@@ -1,0 +1,16 @@
+# Dépendances principales
+Flask==3.0.0
+Flask-SQLAlchemy==3.1.1
+
+# Connexion MySQL
+PyMySQL==1.1.0
+cryptography==42.0.0
+
+# Gestion des images Cloudinary
+cloudinary==1.38.0
+
+# Sécurité
+python-dotenv==1.0.0
+
+# Pour le développement (optionnel mais recommandé)
+Werkzeug==3.0.1

@@ -1,0 +1,723 @@
+{% extends "layout.html" %}
+{% block titre %}Chapellerie — Collection 2026{% endblock %}
+
+{% block styles %}
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+
+/* ================================================
+   RESET GLOBAL — Fond noir pur, style 099.supply
+   ================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #000 !important;
+    color: #fff !important;
+    font-family: 'JetBrains Mono', 'Courier New', monospace !important;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-x: hidden;
+}
+
+/* Cacher les éléments du layout global qui ne correspondent pas au style */
+.top-bar  { display: none !important; }
+footer    { display: none !important; }
+main      { padding: 0 !important; max-width: 100% !important; }
+
+/* ================================================
+   HEADER — Menu | CHAPELLERIE | Panier
+   Style: transparent + monospace
+   ================================================ */
+#main-header {
+    position: fixed !important;
+    top: 0; left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(0,0,0,0.85) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+    padding: 0 16px !important;
+    box-shadow: none !important;
+}
+
+/* Surcharger le contenu du header du layout avec JS — on masque les éléments existants */
+#main-header .nav-principale,
+#main-header .top-bar,
+#main-header .recherche-desktop { display: none !important; }
+
+/* Notre propre header à l'intérieur du layout */
+.header-099 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+    max-width: 100%;
+}
+.header-099 .h-left,
+.header-099 .h-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.header-099 .h-left:hover,
+.header-099 .h-right:hover { color: #fff; }
+.header-099 .h-left svg,
+.header-099 .h-right svg { opacity: 0.7; }
+.header-099 .h-brand {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #fff;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+.header-099 .h-brand span { color: rgba(255,255,255,0.4); }
+.cart-count {
+    font-size: 10px;
+    vertical-align: super;
+    line-height: 0;
+    color: rgba(255,255,255,0.5);
+}
+
+/* ================================================
+   CONTENU PRINCIPAL — Padding top pour le header fixe
+   ================================================ */
+.page-099 {
+    padding: 52px 10px 40px 10px; /* top = hauteur header */
+    min-height: 100vh;
+    max-width: 100vw;
+}
+
+/* ================================================
+   HERO SECTION — 2 grandes cards côte à côte
+   Même proportion que 099.supply
+   ================================================ */
+.hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+/* ================================================
+   FILTRES — Show All | Casquettes | Bonnets | Képis
+   ================================================ */
+.filtres {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    background: #111;
+    padding: 6px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.04);
+}
+.filtre-btn {
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    padding: 12px 20px;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.filtre-btn:hover {
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.8);
+}
+.filtre-btn.actif {
+    background: #fff;
+    color: #000;
+    box-shadow: 0 4px 12px rgba(255,255,255,0.15);
+}
+
+/* ================================================
+   GRILLE PRODUITS — 2 colonnes
+   ================================================ */
+.produits-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+/* ================================================
+   CARD — Le composant central du design
+   ================================================ */
+.card {
+    background: rgba(28, 28, 28, 0.65);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 28px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease, background 0.2s ease, border-color 0.2s;
+    border: 1px solid rgba(255,255,255,0.08);
+    text-decoration: none;
+    display: block;
+    color: inherit;
+}
+.card:hover { transform: scale(1.01); background: rgba(40, 40, 40, 0.75); border-color: rgba(255,255,255,0.2); }
+
+/* Header de la card : code (gauche) + nom (droite) */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 18px 20px 0;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.5);
+}
+.card-header .card-nom {
+    color: rgba(255,255,255,0.8);
+    text-align: right;
+}
+
+/* Zone image — centrée, laisse de la place */
+.card-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    min-height: 200px;
+    position: relative;
+}
+.card-image .produit-emoji {
+    font-size: 7rem;
+    line-height: 1;
+    filter: drop-shadow(0 4px 20px rgba(0,0,0,0.5));
+    transition: transform 0.4s ease;
+    display: block;
+    user-select: none;
+}
+.card:hover .produit-emoji { transform: translateY(-6px) scale(1.05); }
+
+/* Photo produit réelle (à venir) */
+.card-image img {
+    max-width: 100%;
+    max-height: 240px;
+    object-fit: contain;
+    transition: transform 0.4s ease;
+    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.6));
+}
+.card:hover img { transform: translateY(-6px) scale(1.04); }
+
+/* Footer de la card : prix */
+.card-footer {
+    padding: 0 20px 18px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.card-prix {
+    color: rgba(255,255,255,0.9);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* ======= CARD HERO — La grande card intro ======= */
+.card-hero-intro {
+    background: rgba(20, 20, 20, 0.6);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 28px;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 24px;
+    min-height: 380px;
+}
+.card-hero-intro .brand-name {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.5px;
+}
+.card-hero-intro .tagline {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+    max-width: 260px;
+}
+
+/* ======= CARD HERO PRODUIT — La grande card produit ======= */
+.card-hero-produit {
+    background: rgba(30, 30, 30, 0.5);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 28px;
+    overflow: hidden;
+    position: relative;
+    min-height: 380px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(255,255,255,0.08);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.3s;
+    text-decoration: none;
+    color: inherit;
+}
+.card-hero-produit:hover { background: rgba(40, 40, 40, 0.6); transform: scale(1.005); }
+.card-hero-produit .card-header { padding: 20px 22px 0; }
+.card-hero-produit .card-image { flex: 1; min-height: 270px; }
+.card-hero-produit .produit-emoji { font-size: 9rem; }
+.card-hero-produit .card-footer { padding: 0 22px 22px; }
+
+/* ================================================
+   SECTION TITRE CATÉGORIE (entre filtres et grille)
+   ================================================ */
+.section-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.25);
+    text-transform: uppercase;
+    padding: 8px 4px;
+    margin-bottom: 4px;
+}
+
+/* ================================================
+   BADGE "NEW" ou "BEST"
+   ================================================ */
+.card-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: #fff;
+    color: #000;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+/* ================================================
+   MENU LATÉRAL (Drawer) & SEARCH BAR
+   ================================================ */
+/* Masque de fond */
+.menu-backdrop {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 1999;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s;
+}
+.menu-backdrop.ouvert { opacity: 1; pointer-events: auto; }
+
+/* Panneau latéral */
+.menu-drawer {
+    position: fixed; top: 0; left: -340px;
+    width: 320px; height: 100vh;
+    background: #0a0a0a;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    z-index: 2000;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex; flex-direction: column;
+    padding: 24px 16px;
+    overflow-y: auto;
+}
+.menu-drawer.ouvert { transform: translateX(340px); }
+
+/* En-tête / Profil */
+.drawer-header {
+    display: flex; justify-content: space-between; align-items: center;
+    background: #141414; padding: 12px 16px; border-radius: 20px;
+    margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.02);
+}
+.user-info { display: flex; align-items: center; gap: 12px; }
+.user-avatar {
+    width: 38px; height: 38px; border-radius: 14px;
+    background: #333; background-image: url('https://i.pravatar.cc/100?img=47');
+    background-size: cover; position: relative;
+}
+.user-avatar::after {
+    content: ''; position: absolute; bottom: -2px; right: -2px;
+    width: 10px; height: 10px; background: #a3e635; /* Pastille verte (en ligne) */
+    border: 2px solid #141414; border-radius: 50%;
+}
+.bell-icon {
+    width: 38px; height: 38px; border-radius: 12px;
+    background: #1f1f1f; display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.7); cursor: pointer; font-size: 16px;
+}
+
+/* Barre de recherche (Screenshot 2) */
+.search-box {
+    display: flex; align-items: center;
+    background: #1a1a1a; border-radius: 16px; padding: 14px 16px;
+    gap: 12px; border: 1px solid rgba(255,255,255,0.02); flex: 1;
+}
+.search-box input {
+    background: none; border: none; outline: none; color: #fff;
+    font-family: inherit; font-size: 14px; width: 100%;
+}
+.search-box input::placeholder { color: rgba(255,255,255,0.4); }
+.edit-btn {
+    width: 46px; height: 46px; border-radius: 16px;
+    background: #1a1a1a; display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.6); flex-shrink: 0; cursor: pointer; border: 1px solid rgba(255,255,255,0.02);
+}
+
+/* Segments de tri (Sous recherche) */
+.drawer-segments { display: flex; gap: 6px; margin: 16px 0 24px; }
+.segment-btn {
+    flex: 1; text-align: center; padding: 12px 0; border-radius: 14px;
+    font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: inherit;
+    transition: all 0.2s; background: #1a1a1a; color: rgba(255,255,255,0.5);
+}
+.segment-btn.actif { background: #fff; color: #000; }
+
+/* Liens du Menu (Pills avec dégradé) */
+.nav-menu { display: flex; flex-direction: column; gap: 8px; }
+.nav-item {
+    display: flex; align-items: center; gap: 16px; padding: 10px 14px;
+    border-radius: 20px; color: rgba(255,255,255,0.7); text-decoration: none;
+    font-size: 14px; font-weight: 500; transition: background 0.2s, color 0.2s;
+}
+.nav-item:hover { background: #1a1a1a; color: #fff; }
+.nav-icon {
+    width: 36px; height: 36px; border-radius: 12px; background: #1a1a1a;
+    display: flex; align-items: center; justify-content: center; font-size: 15px; color: rgba(255,255,255,0.6);
+}
+.nav-badge {
+    margin-left: auto; background: #1a1a1a; width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 11px; color: rgba(255,255,255,0.6);
+}
+
+/* Élément Actif */
+.nav-item.active { background: #141414; color: #fff; }
+.nav-item.active .nav-icon {
+    background: linear-gradient(135deg, #a855f7, #f97316); /* Violet -> Orange */
+    color: #fff; box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3); border: none;
+}
+
+
+/* ================================================
+   RESPONSIVE
+   ================================================ */
+@media (max-width: 640px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .produits-grid { grid-template-columns: 1fr; }
+    .card-hero-produit .produit-emoji { font-size: 7rem; }
+    .card-image .produit-emoji { font-size: 5rem; }
+    .card-image { min-height: 150px; }
+}
+
+@media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr 1fr; }
+}
+
+</style>
+{% endblock %}
+
+{% block contenu %}
+
+<!-- ================================================
+     HEADER CUSTOM (sur-couche du layout)
+     ================================================ -->
+<div class="header-099" id="header-099">
+    <button class="h-left" id="menu-open-btn" onclick="ouvrirMenu()">
+        <svg width="18" height="14" viewBox="0 0 18 14" fill="none">
+            <rect width="18" height="2" rx="1" fill="white"/>
+            <rect y="6" width="18" height="2" rx="1" fill="white"/>
+            <rect y="12" width="18" height="2" rx="1" fill="white"/>
+        </svg>
+        Menu
+    </button>
+    <a href="/" class="h-brand">CHAPEL<span>LERIE</span></a>
+    <a href="/panier" class="h-right">
+        Cart
+        <sup class="cart-count">0</sup>
+    </a>
+</div>
+
+<!-- ================================================
+     MENU LATÉRAL DRAWER (STYLE UI MODERNE)
+     ================================================ -->
+<div class="menu-backdrop" id="menu-backdrop" onclick="fermerMenu()"></div>
+<div class="menu-drawer" id="menu-drawer">
+    
+    <!-- Header / User -->
+    <div class="drawer-header">
+        <div class="user-info">
+            <div class="user-avatar"></div>
+            <span style="font-weight: 600; font-size: 14px; color: #fff;">Amine C.</span>
+        </div>
+        <div class="bell-icon">🔔</div>
+    </div>
+
+    <!-- Interface Recherche -->
+    <div style="display: flex; gap: 8px;">
+        <div class="search-box">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" placeholder="Search ...">
+        </div>
+        <div class="edit-btn">✎</div>
+    </div>
+
+    <!-- Segments -->
+    <div class="drawer-segments">
+        <button class="segment-btn">Unsigned</button>
+        <button class="segment-btn">Open</button>
+        <button class="segment-btn actif">All</button>
+    </div>
+
+    <!-- Navigation Liens -->
+    <div class="nav-menu">
+        <a href="/" class="nav-item active">
+            <div class="nav-icon">📦</div>
+            Inbox (Accueil)
+        </a>
+        <a href="/produit" class="nav-item">
+            <div class="nav-icon">🧢</div>
+            Casquettes
+            <span class="nav-badge">2</span>
+        </a>
+        <a href="/produit" class="nav-item">
+            <div class="nav-icon">🧶</div>
+            Bonnets
+            <span class="nav-badge">4</span>
+        </a>
+        <a href="/produit" class="nav-item">
+            <div class="nav-icon">🎩</div>
+            Képis
+            <span class="nav-badge">1</span>
+        </a>
+        <a href="/produit" class="nav-item">
+            <div class="nav-icon">👟</div>
+            Sneakers
+            <span class="nav-badge">8</span>
+        </a>
+
+        <!-- Séparateur discret -->
+        <div style="height: 1px; background: rgba(255,255,255,0.05); margin: 16px 0 8px;"></div>
+        
+        <a href="/panier" class="nav-item">
+            <div class="nav-icon" style="background: linear-gradient(135deg, #10b981, #3b82f6); color:#fff;">🛒</div>
+            Panier / Checkout
+            <span class="nav-badge" style="background:#fff; color:#000;">0</span>
+        </a>
+        <a href="#" class="nav-item">
+            <div class="nav-icon">🗑️</div>
+            Trash
+        </a>
+        <a href="#" class="nav-item">
+            <div class="nav-icon">⚙️</div>
+            Settings (More)
+        </a>
+    </div>
+
+</div>
+
+<!-- ================================================
+     PAGE PRINCIPALE
+     ================================================ -->
+<div class="page-099">
+
+    <!-- HERO GRID — 2 grandes cards -->
+    <div class="hero-grid">
+
+        <!-- Card intro / brand -->
+        <div class="card-hero-intro">
+            <div class="brand-name">Chapellerie · Algérie</div>
+            <div class="tagline">
+                Découvrez notre collection 2026 — snapbacks, képis, bonnets et sneakers. <br><br>
+                Lifestyle &amp; streetwear made for the streets of Algeria.
+            </div>
+        </div>
+
+        <!-- Card Bestseller -->
+        <a href="/produit" class="card-hero-produit">
+            <div class="card-header">
+                <span>C 001</span>
+                <span class="card-nom">Snapback (Bestseller)</span>
+            </div>
+            <div class="card-image">
+                <span class="produit-emoji">🧢</span>
+            </div>
+            <div class="card-footer">
+                <span>Casquettes</span>
+                <span class="card-prix">1 200 DZD</span>
+            </div>
+        </a>
+
+    </div>
+
+    <!-- FILTRES -->
+    <div class="filtres" id="filtres">
+        <button class="filtre-btn actif" data-cat="all">Show All</button>
+        <button class="filtre-btn" data-cat="casquettes">Casquettes (C)</button>
+        <button class="filtre-btn" data-cat="bonnets">Bonnets (B)</button>
+        <button class="filtre-btn" data-cat="kepis">Képis (K)</button>
+        <button class="filtre-btn" data-cat="sneakers">Sneakers (S)</button>
+    </div>
+
+    <!-- GRILLE PRODUITS -->
+    <div class="produits-grid" id="produits-grid">
+
+        <!-- C 002 — Snapback Classique -->
+        <a href="/produit" class="card" data-cat="casquettes">
+            <span class="card-badge">New</span>
+            <div class="card-header">
+                <span>C 002</span>
+                <span class="card-nom">Snapback Classique</span>
+            </div>
+            <div class="card-image">
+                <span class="produit-emoji">🧢</span>
+            </div>
+            <div class="card-footer">
+                <span>Ajustable</span>
+                <span class="card-prix">1 200 DZD</span>
+            </div>
+        </a>
+
+        <!-- B 001 — Bonnet Laine -->
+        <a href="/produit" class="card" data-cat="bonnets">
+            <div class="card-header">
+                <span>B 001</span>
+                <span class="card-nom">Bonnet Laine</span>
+            </div>
+            <div class="card-image">
+                <span class="produit-emoji">🧶</span>
+            </div>
+            <div class="card-footer">
+                <span>Hiver</span>
+                <span class="card-prix">900 DZD</span>
+            </div>
+        </a>
+
+        <!-- K 001 — Képi Militaire -->
+        <a href="/produit" class="card" data-cat="kepis">
+            <div class="card-header">
+                <span>K 001</span>
+                <span class="card-nom">Képi Militaire</span>
+            </div>
+            <div class="card-image">
+                <span class="produit-emoji">🎩</span>
+            </div>
+            <div class="card-footer">
+                <span>Prestige</span>
+                <span class="card-prix">1 500 DZD</span>
+            </div>
+        </a>
+
+        <!-- S 001 — Sneaker Runner -->
+        <a href="/produit" class="card" data-cat="sneakers">
+            <span class="card-badge">Best</span>
+            <div class="card-header">
+                <span>S 001</span>
+                <span class="card-nom">Sneaker Runner</span>
+            </div>
+            <div class="card-image">
+                <span class="produit-emoji">👟</span>
+            </div>
+            <div class="card-footer">
+                <span>Street</span>
+                <span class="card-prix">3 500 DZD</span>
+            </div>
+        </a>
+
+        <!-- C 003 — Snapback Premium -->
+        <a href="/produit" class="card" data-cat="casquettes">
+            <div class="card-header">
+                <span>C 003</span>
+                <span class="card-nom">Snapback Premium</span>
+            </div>
+            <div class="card-image">
+                <span class="produit-emoji">🧢</span>
+            </div>
+            <div class="card-footer">
+                <span>Édition Limitée</span>
+                <span class="card-prix">1 800 DZD</span>
+            </div>
+        </a>
+
+        <!-- B 002 — Bonnet Streetwear -->
+        <a href="/produit" class="card" data-cat="bonnets">
+            <div class="card-header">
+                <span>B 002</span>
+                <span class="card-nom">Bonnet Streetwear</span>
+            </div>
+            <div class="card-image">
+                <span class="produit-emoji">🧶</span>
+            </div>
+            <div class="card-footer">
+                <span>Urban</span>
+                <span class="card-prix">1 100 DZD</span>
+            </div>
+        </a>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// ── Menu latéral ──────────────────────────────────────────
+function ouvrirMenu() {
+    document.getElementById('menu-backdrop').classList.add('ouvert');
+    document.getElementById('menu-drawer').classList.add('ouvert');
+    document.body.style.overflow = 'hidden';
+}
+function fermerMenu() {
+    document.getElementById('menu-backdrop').classList.remove('ouvert');
+    document.getElementById('menu-drawer').classList.remove('ouvert');
+    document.body.style.overflow = '';
+}
+
+// ── Filtres ────────────────────────────────────────────────
+document.querySelectorAll('.filtre-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Mettre à jour le bouton actif
+        document.querySelectorAll('.filtre-btn').forEach(b => b.classList.remove('actif'));
+        this.classList.add('actif');
+
+        const cat = this.dataset.cat;
+        document.querySelectorAll('.produits-grid .card').forEach(card => {
+            if (cat === 'all' || card.dataset.cat === cat) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+});
+
+// ── Injecter le header 099 dans le header du layout ────────
+// On place notre header personnalisé à l'intérieur du header existant
+document.addEventListener('DOMContentLoaded', () => {
+    const layoutHeader = document.getElementById('main-header');
+    const header099   = document.getElementById('header-099');
+    if (layoutHeader && header099) {
+        // Masquer tous les enfants directs du header layout
+        Array.from(layoutHeader.children).forEach(el => {
+            if (el !== header099) el.style.display = 'none';
+        });
+        // Déplacer notre header dedans
+        layoutHeader.prepend(header099);
+    }
+});
+</script>
+{% endblock %}

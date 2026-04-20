@@ -1,0 +1,60 @@
+# Structure et Spécifications du Projet E-Commerce
+
+## 1. Informations Générales
+- **Catégories de Produits (Chapellerie) :** Snibak (snapback), Kipi (képis/casquettes classiques/chips), Bonner (bonnets)
+- **Devise :** Dinar Algérien (DZD)
+- **Fonctionnalités Clés de Recherche :** Filtrage par Prix, Taille et Couleur
+
+## 2. Stack Technique
+- **Backend / Serveur :** Flask (Python)
+- **Frontend / Templating :** Jinja2 (Génère le HTML/CSS dynamique)
+- **Base de Données :** MySQL
+- **Gestion des Images / Médias :** Cloudinary
+- **Hébergement cible :** Render
+
+## 3. Architecture Préconisée des Fichiers (Squelette de base)
+```text
+site-ecommerce/
+├── CLAUDE.md              (Architecture, stack, commandes du projet)
+├── docs/
+│   ├── structure.md       (Décisions de design et d'architecture)
+│   └── progression.md     (Suivi de l'avancement de session en session)
+└── src/                   (Code source de l'application Flask)
+```
+
+## 4. Ligne Directrice du Design Frontend (Inspiration : Topperzstore.fr)
+Le design global du site sera **moderne, épuré et très orienté sur le produit**. Il utilisera un fort contraste (principalement noir et blanc, avec des touches de couleurs vives comme ocre/jaune fluo) pour diriger l'attention de l'utilisateur vers les articles et les actions d'achat.
+
+### 4.1 La Page Principale (Navigation et Grille Produits)
+*   **En-tête (Header) :**
+    *   **Logo :** Centré, écrit en lettres noires grasses légèrement inclinées.
+    *   **Menu & Icônes :** À gauche, on trouve un menu de navigation "burger" classique. À droite, le header est complété par des icônes minimalistes dédiées à la Recherche, la Liste d'envies (cœur), le Compte client et le Panier.
+    *   **Bannière promotionnelle :** Juste en dessous de l'en-tête, une bannière très contrastée (souvent avec un fond marquant) affiche les offres en cours.
+*   **Filtres et Tri (latéral et déroulant) :**
+    *   Un bouton "FILTRE" bien visible permet d'ouvrir un panneau latéral pour affiner la sélection au maximum (prix, taille, marque, couleur).
+    *   Un menu déroulant classique à droite permet de trier les résultats (Prix, Pertinence).
+*   **Grille de Produits (Mise en page épurée) :**
+    *   L'interface présente une grille propre. Les cartes de produits s'y intègrent parfaitement sur un fond blanc neutre, ce qui fait ressortir le design et la couleur des casquettes.
+    *   Chaque carte produit contient une photographie de haute qualité du produit **détouré**.
+    *   Sous l'image, on retrouve en majuscules grasses le nom complet du modèle, accompagné d'un badge "NOUVEAU" (si applicable) et du format tarifaire, clairement visible en DZD.
+*   **Ligne Esthétique (Global) :** Typographie sans-serif moderne, extrêmement lisible avec une dominance de casses majuscules pour donner un effet "streetwear" net.
+
+### 4.2 La Page de Détail du Produit (PDP)
+Cette page a pour unique but de verrouiller une vente (conversion) avec de la réassurance.
+*   **Galerie Médias (Centralisé ou à gauche) :**
+    *   L'image phare occupe la moitié de l'écran. Des miniatures cliquables aident l'acheteur à scruter les moindres détails (face, profil, dos, texture, étiquette et vue intérieure très importe).
+*   **Tunnel d'Achat :**
+    *   **Appel à l'action (CTA) :** Le bouton principal "AJOUTER AU PANIER" est imposant, souvent sur fond noir total avec des lettres blanches.
+    *   **Sélection :** Présence d'indicateurs de quantité et surtout d'un bouton très visuel pour le "GUIDE DES TAILLES" (indispensable pour l'e-commerce de chapellerie).
+*   **Réassurance :**
+    *   Liste d'avantages en mini-blocs juste au-dessus du texte : "Livraison rapide", "Paiement sécurisé", ou encore point sur d'éventuels programmes de fidélité. Les logos (Visa, etc.) doivent être visibles mais non envahissants.
+*   **Description & Preuve Sociale :**
+    *   Bref descriptif technique (couronne rigide/souple, broderie flat/3D).
+    *   Intégration idéale de widgets "Avis Clients" vérifiés (ex: Google Avis) en toute fin de module.
+
+### 4.3 Le Footer (Pied de page)
+Le design joue sur une cassure drastique pour alerter visuellement la fin de la visite.
+*   **Zone Noire (Dark mode brutal) :** Le fond passe du blanc/gris mat à un **noir total**.
+*   Encadré par un slogan de marque immersif et oblique (comme le "WE CARE ABOUT CAPS!".
+*   Trois blocs textuels nets et distincts (Assistance / Légal / Contact).
+*   Un pointage discret sur les réseaux sociaux (Instagram, TikTok) de la marque.
